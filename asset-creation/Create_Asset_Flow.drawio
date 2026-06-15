@@ -1,0 +1,107 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="1bNX8FQjJcTl9ww8vFUc">
+    <mxGraphModel dx="649" dy="826" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-6" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-48" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="399.7586206896551" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Create new Company&lt;br&gt;- Company Name&lt;div&gt;- Tenant ID&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="170" x="180" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-20" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-36" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="234.9310344827586" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Create new Tenant&lt;br&gt;- Tenant Name" vertex="1">
+          <mxGeometry height="60" width="140" x="195" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-8" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-39" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-40" connectable="0" parent="7tWdx2EQ6aaQ8chSrq6y-39" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Product ID" vertex="1">
+          <mxGeometry relative="1" x="-0.0174" as="geometry">
+            <mxPoint x="60" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Create Product&lt;div&gt;- Product Code&lt;/div&gt;&lt;div&gt;- Product Name&lt;/div&gt;&lt;div&gt;- Company ID,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Tenant ID&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="150" x="190" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-10" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-41" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="579.7586206896551" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Create Asset&lt;div&gt;- Serial Number&lt;/div&gt;&lt;div&gt;- Product ID,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Tenant ID&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="140" x="195" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-9" parent="1" style="whiteSpace=wrap;html=1;rounded=1;" value="Assign Permissions to user" vertex="1">
+          <mxGeometry height="60" width="120" x="205" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-21" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-19" parent="1" style="whiteSpace=wrap;html=1;rounded=1;" value="Add User to Tenant&lt;div&gt;- Tenant ID&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="205" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-51" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="170" />
+              <mxPoint x="265" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Get Client Application Name" vertex="1">
+          <mxGeometry height="60" width="120" x="140" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-26" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="7tWdx2EQ6aaQ8chSrq6y-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="170" />
+              <mxPoint x="265" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-52" edge="1" parent="1" source="7tWdx2EQ6aaQ8chSrq6y-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="129.83333333333337" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-24" parent="1" style="whiteSpace=wrap;html=1;rounded=1;" value="Get Subscription Owner ID" vertex="1">
+          <mxGeometry height="60" width="120" x="280" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-37" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Tenant ID" vertex="1">
+          <mxGeometry height="30" width="60" x="400" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Asset ID" vertex="1">
+          <mxGeometry height="30" width="60" x="395" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-44" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Subscription Name &amp;amp; Owner ID" vertex="1">
+          <mxGeometry height="30" width="140" x="440" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="7tWdx2EQ6aaQ8chSrq6y-47" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Company ID" vertex="1">
+          <mxGeometry height="30" width="60" x="400" y="385" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
