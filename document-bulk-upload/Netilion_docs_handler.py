@@ -6,6 +6,7 @@ import requests
 import openpyxl
 import glob
 import time
+from datetime import datetime
 
 netilionUrl = "https://api.netilion.endress.com"
 
@@ -33,14 +34,17 @@ def key_file(string):
 parser = argparse.ArgumentParser()
 parser.add_argument("-k", dest="keys", default="test_keys.json", type=key_file, help='Credentials and Keys file path. Specific JSON format')
 parser.add_argument("-d", dest="directory", type=dir_path, help='Document folder directory. Defaults to Document_Directory')
-parser.add_argument("-i", dest="input", type=key_file, help='Bypass call to Netilion and supply documentDictionary as JSON')
-parser.add_argument("-xl", dest="excel", type=str, help='Master file to create document Directory')
-
-parser.add_argument("-rm", dest="remove", default=False, action='store_true', help='Delete documents from Tags in documentDictionary. Undo button.')
-parser.add_argument("-mk", dest="create", default=False, action='store_true', help='No Document directory exists, so create one. Feed Excel file to create from Master File')
 parser.add_argument("-p", dest="post", default=False, action='store_true', help='Upload and assign documents to tags')
-parser.add_argument("-l", dest="list", default=False, action='store_true', help='list all uploaded and attached documents within documentDictionary')
 parser.add_argument("-a", dest="all", default=False, action='store_true', help='Do not filter tag list to only 3rd party')
+parser.add_argument("-c", dest="connect", default=False, action='store_true', help='Connect to Netilion')
+
+parser.add_argument("-mk", dest="create", default=False, action='store_true', help='No Document directory exists, so create one. Feed Excel file to create from Master File')
+parser.add_argument("-xl", dest="excel", type=str, help='Master file to create document Directory')
+parser.add_argument("-rm", dest="remove", default=False, action='store_true', help='Delete documents from Tags in documentDictionary. Undo button.')
+parser.add_argument("--uploaded-list", dest="uploaded", default=False, action='store_true', help='list all uploaded and attached documents within documentDictionary')
+parser.add_argument("-i", dest="input", type=key_file, help='Bypass call to Netilion and supply documentDictionary as JSON')
+
+parser.add_argument("-l", dest="list", default=False, action='store_true', help='Crawl supplied directory for Tag directories')
 
 args = parser.parse_args()
 
@@ -68,8 +72,17 @@ if args.excel is not None:
 removeDocs = args.remove
 createDir = args.create
 postDocs = args.post
-listDocs = args.list
+listUploadedDocs = args.uploaded
 allTags = args.all
+listDirectories = args.list
+connectNetilion = args.connect
+
+# FEATURES PENDING
+# Track what successfully uploaded and don't upload them again
+# Grab tag list and reference stored tag list for subsequent queries
+# Split out the directory processing from the uploading functions
+# Args for Processing > Create tag list, Check for directories associated with those tags, Create a directory structure from excel file or tag list, create tag upload list
+# Args for upload > Keys, Document Directory, Tag List > Output upload report
 
 
 def fetchCred():
@@ -90,24 +103,6 @@ def fetchCred():
         tokenAccess = authorization_dict['access_token']
         tokenRefresh = authorization_dict['refresh_token']
         print("Netilion credentials authenticated")
-    else:
-        raise Exception(f"Non-success status code: {response.status_code}")
-    
-def refreshToken():
-    global tokenAccess
-    global tokenRefresh
-
-    print("Refreshing credentials...")
-
-    authPayload = {'client_id': apiKey, 'client_secret': apiSecret, 'grant_type': 'refresh_token', 'refresh_token': tokenRefresh}
-    authHeader = {'Content-Type': 'application/x-www-form-urlencoded'}
-    response = requests.post(netilionUrl + "/oauth/token", headers=authHeader, params=authPayload)
-
-    if response:
-        authorization_dict = response.json()
-        tokenAccess = authorization_dict['access_token']
-        tokenRefresh = authorization_dict['refresh_token']
-        print("Success!")
     else:
         raise Exception(f"Non-success status code: {response.status_code}")
 
@@ -203,7 +198,6 @@ def xlTagList():
 
 # Determine whether files exist to upload, and how large the upload is.
 def uploadSizeCalc():
-
     if not os.path.exists(directory):
         print("No such directory")
         exit
@@ -227,9 +221,27 @@ def uploadSizeCalc():
     
     return True
 
+def list_files_scandir(path):
+    with os.scandir(path) as entries:
+        for entry in entries:
+            if entry.is_file():
+                ()
+                # print(entry.path)
+            elif entry.is_dir():
+                list_files_scandir(entry.path)
+            return entry.path
+
 # Append dictionary with filepaths
 # Skip any tags without associated documents, or no folder for the tag in the document directory
 def processFiles():
+    global documentDictionary
+
+    try:
+        inputTags
+    except:
+        print("except")
+    else:
+        documentDictionary = inputTags
 
     print("Sifting through the directory for files...")
     # Write file paths within the folder to the dictionary
@@ -240,73 +252,75 @@ def processFiles():
             index = [j for j, s in enumerate(folders) if i in s]
             if not index:
                 documentDictionary[i][1] = ""
+            # else:
+            #     documentDictionary[i][1] = glob.glob(folders[index[0]] + "*/*" , recursive=True)
             else:
-                documentDictionary[i][1] = glob.glob(folders[index[0]] + "*/*" , recursive=True)
+                documentDictionary[i][1] = glob.glob(folders[index[0]] + '*/**/*', recursive=True)
         except ValueError:
             print("Files not found for specified ID...")
 
 # Create document object, attach file to document, post document to instrumentation
 # Tags will have some arbitrary number of assets
+# Tracks the time and renews credentials to continue posting
 def postDocuments():
 
     print("Posting Documents")
 
-    refreshCount = 0
+    startTime = datetime.now()
+    count = 0
 
     for i in documentDictionary:
-        
+        checkTime = datetime.now()
+        if (checkTime - startTime).total_seconds() >= 600:
+            print("\n")
+            fetchCred()
+            startTime = checkTime
+            time.sleep(5)
         for j in documentDictionary[i][1]:
-            
-            if refreshCount % 200 == 0 and refreshCount > 100:
-                print("\n")
-                print("Refreshing Token")
-                refreshToken()
-                refreshCount = 0
-                time.sleep(5)
-
-            # create document
-            payload = {
-                "name": os.path.splitext(os.path.basename(j))[0],
-                "description": str(documentDictionary[i][0]),
-                "classification":{"id": 1},
-                "status":{"id": 1},
-                "tenant":{"id": 1}
-                }
-            
-            # create documents
-            response = requests.post(netilionUrl + "/v1/documents", headers={'Authorization': "Bearer " + tokenAccess}, json=payload)
-            
-            if response:
-                response_dict = response.json()
-                payloadDocs = {"documents": [{"id": response_dict["id"]}]}
-                
-                # open files to create attachment
-                files = {
-                    'file': (open(j, 'rb'))
-                    }
-                data = {'document_id': response_dict["id"]}
-                
-                response_Attach = requests.post(netilionUrl + "/v1/attachments", headers={'Authorization': "Bearer " + tokenAccess}, files=files, data=data)
-
-                if response_Attach:
-                    ()
-                else:
-                    raise Exception(f"Non-success status code: {response_Attach.status_code}")
-
-                # assign documents
-                response_Docs = requests.post(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess}, json=payloadDocs)
-                
-                if response_Docs:
-                    # print(".", end=" ")
-                    print(str(refreshCount) + " - " + str(payload))
-                    refreshCount += 1
-                else:
-                    raise Exception(f"Non-success status code: {response_Docs.status_code}")
-
+            if not os.path.isfile(j):
+                next
             else:
-                raise Exception(f"Non-success status code: {response.status_code}")
+                # create document
+                payload = {
+                    "name": os.path.splitext(os.path.basename(j))[0],
+                    "description": str(documentDictionary[i][0]),
+                    "classification":{"id": 1},
+                    "status":{"id": 1},
+                    "tenant":{"id": 1}
+                    }
+                
+                # create documents
+                response = requests.post(netilionUrl + "/v1/documents", headers={'Authorization': "Bearer " + tokenAccess}, json=payload)
+                
+                if response:
+                    response_dict = response.json()
+                    payloadDocs = {"documents": [{"id": response_dict["id"]}]}
+                    
+                    # open files to create attachment
+                    files = {
+                        'file': (open(j, 'rb'))
+                        }
+                    data = {'document_id': response_dict["id"]}
+                    
+                    response_Attach = requests.post(netilionUrl + "/v1/attachments", headers={'Authorization': "Bearer " + tokenAccess}, files=files, data=data)
 
-    
+                    if response_Attach:
+                        ()
+                    else:
+                        raise Exception(f"Non-success status code: {response_Attach.status_code}")
+
+                    # assign documents
+                    response_Docs = requests.post(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess}, json=payloadDocs)
+                    
+                    if response_Docs:
+                        # print(".", end=" ")
+                        print(str(count) + " - " + str(payload))
+                        count += 1
+                    else:
+                        raise Exception(f"Non-success status code: {response_Docs.status_code}")
+
+                else:
+                    raise Exception(f"Non-success status code: {response.status_code}")
     print("Uploaded Files to Netilion!")
 
 # Use MIV master file to create a directory structure, if supplied as arg
@@ -355,12 +369,21 @@ def createDirectories():
 def directoryScan():
     folders = [x[0] for x in os.walk(directory)]
 
-    for i in documentDictionary:
-        try:
-            index = [j for j, s in enumerate(folders) if i in s]
-            print(folders[index[0]])
-        except ValueError:
-            print("Not Found")
+    with open("logs/directoryScan.log", "a") as f:
+        f.write(str(documentDictionary) + "\n")
+
+
+        for i in documentDictionary:
+            try:
+                index = [j for j, s in enumerate(folders) if i in s]
+                if not index:
+                    f.write("" + "\n")
+                else:
+                    f.write(str(folders[index[0]]) + "\n")
+            except ValueError:
+                print("Not Found")
+
+        f.close()
 
 # Bulk Undo button
 def deleteDocuments():
@@ -368,31 +391,37 @@ def deleteDocuments():
     print("Deleting all documents assigned to Tags in Tag list...")
 
     f = open("logs/deletion_documents.log", "a")
-       
+
+    startTime = datetime.now()
     for i in documentDictionary:
-        documentList = []
-        response = requests.get(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess})
-
-        if response:
-            response_dict = response.json()
-            for j in response_dict["documents"]:
-                documentList.append({"id": j["id"]})
+        checkTime = datetime.now()
+        if (checkTime - startTime).total_seconds() >= 600:
+            fetchCred()
+            time.sleep(5)
+            startTime = checkTime
         else:
-            raise Exception(f"Non-success status code: {response.status_code}")
+            documentList = []
+            response = requests.get(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess})
 
-        # create the dictionary of documents
-        
-        data = {"documents": documentList}
-        f.write(str([documentDictionary[i][0], data]) + "\n")
-
-        if bool(documentList) is True:
-            response_Deletion = requests.delete(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess, 'Content-Type': "application/json"}, data=json.dumps(data))
-            
-            if response_Deletion:
-                ()
+            if response:
+                response_dict = response.json()
+                for j in response_dict["documents"]:
+                    documentList.append({"id": j["id"]})
             else:
-                raise Exception(f"Non-success status code: {response_Deletion.status_code}")
-    
+                raise Exception(f"Non-success status code: {response.status_code}")
+
+            # create the dictionary of documents
+            
+            data = {"documents": documentList}
+            f.write(str([documentDictionary[i][0], data]) + "\n")
+
+            if bool(documentList) is True:
+                response_Deletion = requests.delete(netilionUrl + "/v1/instrumentations/" + str(documentDictionary[i][0]) + "/documents", headers={'Authorization': "Bearer " + tokenAccess, 'Content-Type': "application/json"}, data=json.dumps(data))
+                
+                if response_Deletion:
+                    ()
+                else:
+                    raise Exception(f"Non-success status code: {response_Deletion.status_code}")
     f.close()
     print("Deletion Complete")
 
@@ -434,7 +463,7 @@ def deleteOrphanedDocs():
     print("Deletion done.")
 
 # Collect list of documents attached to Tags, currently
-def listDocuments():
+def listUploadedDocuments():
     
     print("Finding and listing documents attached to Tags in Tag List")
 
@@ -461,27 +490,35 @@ def listDocuments():
 
 if __name__ == "__main__":
 
-    fetchCred()
+    if connectNetilion:
+        fetchCred()
 
-    if not allTags:
-        pull3rdPartyTags()
-    else:
-        pullAllTags()
+        if not allTags:
+            pull3rdPartyTags()
+        else:
+            pullAllTags()
 
-    if not (removeDocs or createDir or listDocs):
+    if not (removeDocs or createDir or listUploadedDocs):
         if uploadSizeCalc():
             processFiles()
             if postDocs:
+                # renew credentials right before posting documents
+                fetchCred()
                 postDocuments()
+        else:
+            exit()
 
-    if createDir and not (removeDocs or listDocs):
+    if createDir and not (removeDocs or listUploadedDocs):
         createDirectories()
 
-    if removeDocs and not listDocs:
+    if removeDocs and not listUploadedDocs:
         deleteDocuments()
 
-    if listDocs:
-        listDocuments()
+    if listUploadedDocs:
+        listUploadedDocuments()
+
+    if listDirectories:
+        directoryScan()
 
     with open("logs/runtime.log", "a") as f:
         f.write(str(documentDictionary) + "\n")
